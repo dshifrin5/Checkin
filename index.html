@@ -98,7 +98,7 @@
       statusEl.textContent = "Checking in...";
 
       try {
-        const res = await fetch("https://da60-47-18-38-63.ngrok-free.app/mobile-checkin", {
+        const res = await fetch("https://b3df-47-18-38-63.ngrok-free.app/mobile-checkin", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -114,9 +114,13 @@
           familyMatches = data.family_matches || [data.name];
           matchedNameEl.innerHTML = `Did you say <strong>${data.name}</strong>?`;
 
+          // Always show family header if there's more than one, but still confirm if just one
           if (familyMatches.length > 1) {
             familyHeader.style.display = "block";
+          } else {
+            familyHeader.style.display = "none";
           }
+
 
           familyListEl.innerHTML = familyMatches.map((n, i) => `
             <div class="form-check name-checkbox">
@@ -146,7 +150,7 @@
       });
 
       try {
-        const res = await fetch("https://da60-47-18-38-63.ngrok-free.app/mobile-confirm", {
+        const res = await fetch("https://b3df-47-18-38-63.ngrok-free.app/mobile-confirm", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
