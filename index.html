@@ -79,64 +79,68 @@
     let familyMatches = [];
 
     async function submitName() {
-      const name = document.getElementById('nameInput').value.trim();
-      const statusEl = document.getElementById('status');
-      const confirmBox = document.getElementById('confirm-box');
-      const matchedNameEl = document.getElementById('matched-name');
-      const familyListEl = document.getElementById('family-list');
-      const familyHeader = document.getElementById('family-header');
-      confirmBox.style.display = 'none';
-      statusEl.textContent = '';
-      familyListEl.innerHTML = '';
-      familyHeader.style.display = 'none';
+        const name = document.getElementById('nameInput').value.trim();
+        const statusEl = document.getElementById('status');
+        const confirmBox = document.getElementById('confirm-box');
+        const matchedNameEl = document.getElementById('matched-name');
+        const familyListEl = document.getElementById('family-list');
+        const familyHeader = document.getElementById('family-header');
+        confirmBox.style.display = 'none';
+        statusEl.textContent = '';
+        familyListEl.innerHTML = '';
+        familyHeader.style.display = 'none';
 
-      if (!name) {
-        statusEl.textContent = "Please enter your name.";
-        return;
-      }
-
-      statusEl.textContent = "Checking in...";
-
-      try {
-        const res = await fetch("https://b3df-47-18-38-63.ngrok-free.app/mobile-checkin", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ name })
-        });
-
-        const data = await res.json();
-
-        if (data.status === "restricted") {
-          statusEl.innerHTML = `<span style="color:red;">${data.message}</span>`;
-        } else if (data.status === "match") {
-          familyMatches = data.family_matches || [data.name];
-          matchedNameEl.innerHTML = `Did you say <strong>${data.name}</strong>?`;
-
-          // Always show family header if there's more than one, but still confirm if just one
-          if (familyMatches.length > 1) {
-            familyHeader.style.display = "block";
-          } else {
-            familyHeader.style.display = "none";
-          }
-
-
-          familyListEl.innerHTML = familyMatches.map((n, i) => `
-            <div class="form-check name-checkbox">
-              <input class="form-check-input" type="checkbox" id="cb-${i}" checked>
-              <label class="form-check-label" for="cb-${i}">${n}</label>
-            </div>
-          `).join('');
-
-          confirmBox.style.display = "block";
-        } else {
-          statusEl.textContent = "Name not found. Please try again.";
+        if (!name) {
+            statusEl.textContent = "Please enter your name.";
+            return;
         }
-      } catch (err) {
-        statusEl.textContent = "Error connecting to server.";
-        console.error(err);
-      }
+
+        statusEl.textContent = "Checking in...";
+
+        try {
+            const res = await fetch("https://8ffe-47-18-38-63.ngrok-free.app/mobile-checkin", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name })
+            });
+
+            const data = await res.json();
+
+            if (data.status === "restricted") {
+                // This is triggered for IPAY, PROP, PVT1 patients
+                confirmBox.style.display = "none";
+                statusEl.innerHTML = `<span style="color:red;">${data.message}</span>`;
+                return; // 🚫 Prevent further processing
+            }
+
+            if (data.status === "match") {
+                familyMatches = data.family_matches || [data.name];
+                matchedNameEl.innerHTML = `Did you say <strong>${data.name}</strong>?`;
+
+                if (familyMatches.length > 1) {
+                    familyHeader.style.display = "block";
+                } else {
+                    familyHeader.style.display = "none";
+                }
+
+                familyListEl.innerHTML = familyMatches.map((n, i) => `
+                    <div class="form-check name-checkbox">
+                        <input class="form-check-input" type="checkbox" id="cb-${i}" checked>
+                        <label class="form-check-label" for="cb-${i}">${n}</label>
+                    </div>
+                `).join('');
+
+                confirmBox.style.display = "block";
+            } else {
+                statusEl.textContent = "Name not found. Please try again.";
+            }
+
+        } catch (err) {
+            statusEl.textContent = "Error connecting to server.";
+            console.error(err);
+        }
     }
 
     async function confirmCheckin() {
@@ -150,7 +154,7 @@
       });
 
       try {
-        const res = await fetch("https://b3df-47-18-38-63.ngrok-free.app/mobile-confirm", {
+        const res = await fetch("https://8ffe-47-18-38-63.ngrok-free.app/mobile-confirm", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
