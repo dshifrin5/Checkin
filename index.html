@@ -98,7 +98,7 @@
       statusEl.textContent = "Checking in...";
 
       try {
-        const res = await fetch("https://b9ef-47-18-38-63.ngrok-free.app/mobile-checkin", {
+        const res = await fetch("https://4c8d-47-18-38-63.ngrok-free.app/mobile-checkin", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -115,9 +115,6 @@
           matchedNameEl.innerHTML = `Did you say <strong>${data.name}</strong>?`;
 
           familyHeader.style.display = "block";
-          familyListEl.innerHTML = familyMatches.map((n, i) => ...
-
-
           familyListEl.innerHTML = familyMatches.map((n, i) => `
             <div class="form-check name-checkbox">
               <input class="form-check-input" type="checkbox" id="cb-${i}" checked>
@@ -135,6 +132,7 @@
       }
     }
 
+
     async function confirmCheckin() {
       const statusEl = document.getElementById('status');
       statusEl.textContent = "Confirming...";
@@ -147,7 +145,7 @@
       });
 
       try {
-        const res = await fetch("https://b9ef-47-18-38-63.ngrok-free.app/mobile-confirm", {
+        const res = await fetch("https://4c8d-47-18-38-63.ngrok-free.app/mobile-confirm", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
