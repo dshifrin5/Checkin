@@ -98,53 +98,47 @@
       statusEl.textContent = "Checking in...";
 
       try {
-        const res = await fetch("https://4d4d-47-18-38-63.ngrok-free.app/mobile-checkin", {
+        const res = await fetch("https://da60-47-18-38-63.ngrok-free.app/mobile-checkin", {
           method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ name })
-      });
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ name })
+        });
 
-      const data = await res.json();
-    
-      if (data.status === "restricted") {
-        statusEl.innerHTML = `<span style="color:red;">${data.message}</span>`;
-      } else if (data.status === "match") {
-        familyMatches = data.family_matches && data.family_matches.length > 0
-          ? data.family_matches
-          : [data.name];
+        const data = await res.json();
 
-        matchedNameEl.innerHTML = `Did you say <strong>${data.name}</strong>?`;
+        if (data.status === "restricted") {
+          statusEl.innerHTML = `<span style="color:red;">${data.message}</span>`;
+        } else if (data.status === "match") {
+          familyMatches = data.family_matches || [data.name];
+          matchedNameEl.innerHTML = `Did you say <strong>${data.name}</strong>?`;
 
-        if (familyMatches.length > 1) {
-          familyHeader.style.display = "block";
+          if (familyMatches.length > 1) {
+            familyHeader.style.display = "block";
+          }
+
+          familyListEl.innerHTML = familyMatches.map((n, i) => `
+            <div class="form-check name-checkbox">
+              <input class="form-check-input" type="checkbox" id="cb-${i}" checked>
+              <label class="form-check-label" for="cb-${i}">${n}</label>
+            </div>
+          `).join('');
+
+          confirmBox.style.display = "block";
         } else {
-          familyHeader.style.display = "none";
+          statusEl.textContent = "Name not found. Please try again.";
         }
-
-        familyListEl.innerHTML = familyMatches.map((n, i) => `
-          <div class="form-check name-checkbox">
-            <input class="form-check-input" type="checkbox" id="cb-${i}" checked>
-            <label class="form-check-label" for="cb-${i}">${n}</label>
-          </div>
-        `).join('');
-
-        confirmBox.style.display = "block";
-      } else {
-        statusEl.textContent = "Name not found. Please try again.";
+      } catch (err) {
+        statusEl.textContent = "Error connecting to server.";
+        console.error(err);
       }
-    } catch (err) {
-      statusEl.textContent = "Error connecting to server.";
-      console.error(err);
     }
-
 
     async function confirmCheckin() {
       const statusEl = document.getElementById('status');
       statusEl.textContent = "Confirming...";
 
-      // Gather only checked names
       const checkedNames = [];
       familyMatches.forEach((name, i) => {
         const cb = document.getElementById(`cb-${i}`);
@@ -152,7 +146,7 @@
       });
 
       try {
-        const res = await fetch("https://4d4d-47-18-38-63.ngrok-free.app/mobile-confirm", {
+        const res = await fetch("https://da60-47-18-38-63.ngrok-free.app/mobile-confirm", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
