@@ -27,7 +27,7 @@ def start_ngrok():
 def update_index_html(public_url):
     with open(HTML_PATH, "r", encoding="utf-8") as file:
         html = file.read()
-    updated = re.sub(r"https?://[a-z0-9\-]+\.ngrok-free\.app|https://0b3a-47-18-38-63.ngrok-free.app", public_url, html)
+    updated = re.sub(r"https?://[a-z0-9\-]+\.ngrok-free\.app|https://0880-47-18-38-63.ngrok-free.app", public_url, html)
     if html != updated:
         with open(HTML_PATH, "w", encoding="utf-8") as file:
             file.write(updated)
