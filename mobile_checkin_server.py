@@ -3,9 +3,17 @@ import time
 import requests
 import re
 import os
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+app = Flask(__name__)
+
+# Allow only your frontend domain
+CORS(app, origins=["https://checkin-n9l5.onrender.com"])
+
 
 # === CONFIG ===
-HTML_PATH = os.path.expanduser(r"C:\Users\19179\Desktop\Checkin\mobile_checkin_server.py")
+HTML_PATH = os.path.expanduser(r"C:\Users\bites\OneDrive\Desktop\Checkin\index.html")
 GIT_BRANCH = "main"
 RENDER_SERVICE_ID = "srv-d17puvgdl3ps7391mnpg"
 RENDER_API_KEY = "rnd_PVTkldXhRNq8DwWypV9FzBihMVjd"
@@ -85,4 +93,4 @@ if __name__ == "__main__":
         print("[Auto Deploy Failed]", e)
 
     # === Run your Flask app ===
-    import VoiceServerTest  # This will run your real app on port 5001
+    os.system("python VoiceServerTest.py")
